@@ -1,0 +1,36 @@
+# .github/workflows/weather-stickers.yml
+name: Update weather stickers
+
+on:
+  schedule:
+    # каждые четыре часа, по нулевой минуте (UTC)
+    - cron: "0 */4 * * *"
+  # возможность запустить вручную из Actions
+  workflow_dispatch:
+
+jobs:
+  update-weather-stickers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run main.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
+          STICKER_SET_NAME: ${{ secrets.STICKER_SET_NAME }}
+          STICKER_SET_TITLE: ${{ secrets.STICKER_SET_TITLE }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        run: python main.py
