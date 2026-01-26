@@ -1,4 +1,4 @@
-# .github/workflows/weather-stickers.yml
+# .github/workflows/bashkortostan-weather.yml
 name: Update weather stickers
 
 on:
