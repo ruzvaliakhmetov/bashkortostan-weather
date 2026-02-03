@@ -10,7 +10,12 @@ from telegram.error import BadRequest
 
 
 IMAGES_DIR = Path(__file__).parent / "images"
-ICONS_DIR = IMAGES_DIR / "icons"  # сюда кладём PNG-иконки погоды 225x225 (01d.png, 02n.png и т.п.)
+ICONS_DIR = IMAGES_DIR / "icons"  # PNG-иконки погоды 225x225 (01d.png, 02n.png и т.п.)
+
+# Погодные фоны (кладём в images/): bg_01d.png, bg_01n.png, ..., bg_50n.png
+BG_PREFIX = "bg_"
+BG_FALLBACK_1 = "bg_fallback.png"  # опционально (если есть)
+BG_FALLBACK_2 = "bg_01d.png"       # запасной вариант, если нет bg_fallback.png
 
 
 # ==========================
@@ -38,13 +43,12 @@ class DetailsLayout:
 
 # Город
 CITY_LAYOUT = BlockLayout(
-    x=50,   # None = центр по горизонтали
-    y=400,   # None = автоматически чуть выше низа
+    x=50,
+    y=400,
     font_size=58,
 )
 
 # Температура (цифры) — ПРАВАЯ ВЫКЛЮЧКА
-# x = отступ от ПРАВОГО края стикера
 TEMP_LAYOUT = BlockLayout(
     x=80,          # правый край цифр будет в 80 px от правого края картинки
     y=30,
@@ -54,8 +58,8 @@ TEMP_LAYOUT = BlockLayout(
 
 # Блок "°C" — отдельный независимый блок
 DEGREE_LAYOUT = BlockLayout(
-    x=430,          # обычный x от левого края
-    y=56,          # можешь поставить None и задать default_y при вызове
+    x=430,
+    y=56,
     font_size=42,
     right_align=False,
 )
@@ -84,7 +88,7 @@ TIME_LAYOUT = BlockLayout(
 # Блок деталей (humidity, wind, conditions) — три строки
 DETAILS_LAYOUT = DetailsLayout(
     x=50,
-    y=290,       # стартовая Y для первой строки
+    y=290,
     font_size=30,
     line_spacing=6,
 )
@@ -105,91 +109,20 @@ class CityConfig:
     query: str         # как отдать город в API
     emoji: str         # эмодзи для стикера
     output: str        # куда сохранить png
-    background: str    # фон города (PNG), путь относительно IMAGES_DIR
     tz_offset_hours: int = 0  # смещение от UTC, для локального времени города
 
 
 CITIES = [
-    CityConfig(
-        name="Ufa",
-        query="Ufa,RU",
-        emoji="🏙️",
-        output="sticker_ufa.png",
-        background="bg_ufa.png",
-        tz_offset_hours=5,  # примерно UTC+5
-    ),
-    CityConfig(
-        name="Neftekamsk",
-        query="Neftekamsk,RU",
-        emoji="🏙️",
-        output="sticker_neftekamsk.png",
-        background="bg_neftekamsk.png",
-        tz_offset_hours=5,  # примерно UTC+5
-    ),
-    CityConfig(
-        name="Dyurtyuli",
-        query="Dyurtyuli,RU",
-        emoji="🏙️",
-        output="sticker_dyurtyuli.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # примерно UTC+5
-    ),
-    CityConfig(
-        name="Mesyagutovo",
-        query="Mesyagutovo,RU",
-        emoji="🏙️",
-        output="sticker_mesyagutovo.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # примерно UTC+5
-    ),
-    CityConfig(
-        name="Kushnarenkovo",
-        query="Kushnarënkovo, RU",
-        emoji="🏙️",
-        output="sticker_kushnarenkovo.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # примерно UTC+5
-    ),
-    CityConfig(
-        name="Tuymazy",
-        query="Tuymazy,RU",
-        emoji="🏙️",
-        output="sticker_tuymazy.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # UTC+5
-    ),
-    CityConfig(
-        name="Sterlitamak",
-        query="Sterlitamak,RU",
-        emoji="🏙️",
-        output="sticker_sterlitamak.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # UTC+5
-    ),
-    CityConfig(
-        name="Salavat",
-        query="Salavat,RU",
-        emoji="🏙️",
-        output="sticker_salavat.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # UTC+5
-    ),
-    CityConfig(
-        name="Meleuz",
-        query="Meleuz,RU",
-        emoji="🏙️",
-        output="sticker_meleuz.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # UTC+5
-    ),
-    CityConfig(
-        name="Kumertau",
-        query="Kumertau,RU",
-        emoji="🏙️",
-        output="sticker_kumertau.png",
-        background="bg_fallback.png",
-        tz_offset_hours=5,  # UTC+5
-    ),
+    CityConfig(name="Ufa",         query="Ufa,RU",          emoji="🏙️", output="sticker_ufa.png",         tz_offset_hours=5),
+    CityConfig(name="Neftekamsk",  query="Neftekamsk,RU",   emoji="🏙️", output="sticker_neftekamsk.png",  tz_offset_hours=5),
+    CityConfig(name="Dyurtyuli",   query="Dyurtyuli,RU",    emoji="🏙️", output="sticker_dyurtyuli.png",   tz_offset_hours=5),
+    CityConfig(name="Mesyagutovo", query="Mesyagutovo,RU",  emoji="🏙️", output="sticker_mesyagutovo.png", tz_offset_hours=5),
+    CityConfig(name="Kushnarenkovo", query="Kushnarënkovo, RU", emoji="🏙️", output="sticker_kushnarenkovo.png", tz_offset_hours=5),
+    CityConfig(name="Tuymazy",     query="Tuymazy,RU",      emoji="🏙️", output="sticker_tuymazy.png",     tz_offset_hours=5),
+    CityConfig(name="Sterlitamak", query="Sterlitamak,RU",  emoji="🏙️", output="sticker_sterlitamak.png", tz_offset_hours=5),
+    CityConfig(name="Salavat",     query="Salavat,RU",      emoji="🏙️", output="sticker_salavat.png",     tz_offset_hours=5),
+    CityConfig(name="Meleuz",      query="Meleuz,RU",       emoji="🏙️", output="sticker_meleuz.png",      tz_offset_hours=5),
+    CityConfig(name="Kumertau",    query="Kumertau,RU",     emoji="🏙️", output="sticker_kumertau.png",    tz_offset_hours=5),
 ]
 
 
@@ -254,6 +187,40 @@ def fetch_weather(city: CityConfig) -> WeatherInfo:
 
 
 # ==========================
+#   ФОН ПО ПОГОДЕ
+# ==========================
+
+def _get_background_path(icon_code: str) -> Path:
+    """
+    Возвращает путь к фону на основе icon_code (например "01d" -> images/bg_01d.png).
+    Если не найден — пытается взять fallback.
+    """
+    if icon_code:
+        candidate = IMAGES_DIR / f"{BG_PREFIX}{icon_code}.png"
+        if candidate.exists():
+            return candidate
+        print(f"[warn] weather bg not found for icon '{icon_code}': {candidate}")
+
+    # fallback #1: bg_fallback.png (если есть)
+    fb1 = IMAGES_DIR / BG_FALLBACK_1
+    if fb1.exists():
+        return fb1
+
+    # fallback #2: bg_01d.png (ожидаемо существует)
+    fb2 = IMAGES_DIR / BG_FALLBACK_2
+    if fb2.exists():
+        return fb2
+
+    raise FileNotFoundError(
+        "No suitable background found. Expected one of:\n"
+        f"- {IMAGES_DIR / f'{BG_PREFIX}{icon_code}.png'}\n"
+        f"- {fb1}\n"
+        f"- {fb2}\n"
+        "Put weather backgrounds into the images/ folder."
+    )
+
+
+# ==========================
 #   РИСОВАЛКИ
 # ==========================
 
@@ -267,17 +234,6 @@ def _draw_text_block(
     default_y: int | None = None,
     fill=(255, 255, 255, 255),
 ) -> tuple[int, int, int, int]:
-    """
-    Универсальный рисователь текста.
-
-    - Если layout.x не None:
-        - при right_align=False: x — от левого края;
-        - при right_align=True: x — от правого края (отступ), текст выровнен по правому краю.
-    - Если layout.x None, но задан default_x — используем его.
-    - Иначе центрируем по горизонтали.
-
-    Аналогично с y: layout.y / default_y / позиция "чуть выше низа".
-    """
     font = get_font(layout.font_size)
     tb = draw.textbbox((0, 0), text, font=font)
     text_w = tb[2] - tb[0]
@@ -286,15 +242,12 @@ def _draw_text_block(
     # ---------- X ----------
     if layout.x is not None:
         if layout.right_align:
-            # x — отступ от ПРАВОГО края, делаем правую выключку
             x = img.width - layout.x - text_w
         else:
-            # обычный x от левого края
             x = layout.x
     elif default_x is not None:
         x = default_x
     else:
-        # центрируем, если ничего не задано
         x = (img.width - text_w) // 2
 
     # ---------- Y ----------
@@ -303,7 +256,6 @@ def _draw_text_block(
     elif default_y is not None:
         y = default_y
     else:
-        # по умолчанию — чуть выше низа (для города, если не задано иное)
         y = img.height - text_h - 40
 
     draw.text((x, y), text, font=font, fill=fill)
@@ -341,7 +293,6 @@ def _paste_icon(img: Image.Image, icon_code: str) -> None:
     if icon.size != ICON_SIZE:
         icon = icon.resize(ICON_SIZE, Image.LANCZOS)
 
-    # Вклеиваем иконку в левый верхний угол
     img.alpha_composite(icon, (ICON_X, ICON_Y))
 
 
@@ -357,47 +308,35 @@ def generate_weather_image(
     month_text: str,
     time_text: str,
 ) -> None:
-    # --- фон города ---
-    bg_path = IMAGES_DIR / city.background
-    if not bg_path.exists():
-        raise FileNotFoundError(
-            f"Background image not found: {bg_path}. "
-            f"Put city backgrounds (e.g. {city.background}) into {IMAGES_DIR}"
-        )
-
+    # --- фон по погоде (bg_01d.png, bg_02n.png, ...) ---
+    bg_path = _get_background_path(weather.icon_code)
     img = Image.open(bg_path).convert("RGBA")
     draw = ImageDraw.Draw(img)
 
     # --- иконка погоды ---
     _paste_icon(img, weather.icon_code)
 
-    # --- ТЕМПЕРАТУРА (цифры) с правой выключкой (через TEMP_LAYOUT) ---
+    # --- ТЕМПЕРАТУРА (цифры) с правой выключкой ---
     temp_text = f"{round(weather.temp):d}"
     _draw_text_block(
         draw,
         img,
         temp_text,
         TEMP_LAYOUT,
-        default_y=70,  # на случай, если TEMP_LAYOUT.y = None
+        default_y=70,
     )
 
-    # --- БЛОК "°C" — полностью независим ---
+    # --- БЛОК "°C" ---
     _draw_text_block(
         draw,
         img,
         "°C",
         DEGREE_LAYOUT,
-        default_y=70,  # можно изменить/убрать, если хочешь другой дефолт
+        default_y=70,
     )
 
     # --- Город ---
-    _draw_text_block(
-        draw,
-        img,
-        city.name,
-        CITY_LAYOUT,
-        # default_y не задаём — по умолчанию город внизу
-    )
+    _draw_text_block(draw, img, city.name, CITY_LAYOUT)
 
     # --- Дата / время обновления ---
     _draw_text_block(draw, img, day_text, DAY_LAYOUT)
@@ -427,13 +366,12 @@ async def update_stickers() -> None:
     for city in CITIES:
         weather = fetch_weather(city)
 
-        # Локальное время города по его часовому поясу (через фиксированный offset от UTC)
         utc_now = datetime.utcnow()
         city_now = utc_now + timedelta(hours=city.tz_offset_hours)
 
-        day_text = city_now.strftime("%d")     # "07"
-        month_text = city_now.strftime("%b")   # "Dec"
-        time_text = city_now.strftime("%H:%M") # "20:55"
+        day_text = city_now.strftime("%d")
+        month_text = city_now.strftime("%b")
+        time_text = city_now.strftime("%H:%M")
 
         generate_weather_image(city, weather, city.output, day_text, month_text, time_text)
 
@@ -452,14 +390,12 @@ async def update_stickers() -> None:
             )
         )
 
-    # 2) Пробуем получить набор
     try:
         sticker_set = await bot.get_sticker_set(set_name)
     except BadRequest as e:
         msg = getattr(e, "message", str(e)).lower()
         print("get_sticker_set error:", msg)
         if "stickerset_invalid" in msg or "stickerset not found" in msg:
-            # набора нет — создаём новый сразу со всеми городами
             await bot.create_new_sticker_set(
                 user_id=owner_user_id,
                 name=set_name,
@@ -472,13 +408,11 @@ async def update_stickers() -> None:
         else:
             raise
 
-    # 3) Набор существует — делаем replace там, где можем
     old_stickers = sticker_set.stickers
     old_count = len(old_stickers)
     new_count = len(new_stickers)
     common = min(old_count, new_count)
 
-    # 3a) replace для общих позиций
     for i in range(common):
         old_id = old_stickers[i].file_id
         new_st = new_stickers[i]
@@ -493,7 +427,6 @@ async def update_stickers() -> None:
         except BadRequest as e:
             print("replace_sticker_in_set error:", getattr(e, "message", str(e)))
 
-    # 3б) если новых больше — добавляем хвост
     if new_count > old_count:
         for i in range(common, new_count):
             st = new_stickers[i]
@@ -507,7 +440,6 @@ async def update_stickers() -> None:
             except BadRequest as e:
                 print("add_sticker_to_set error:", getattr(e, "message", str(e)))
 
-    # 3в) если старых больше — удаляем лишние в конце
     elif old_count > new_count:
         for i in range(common, old_count):
             old_id = old_stickers[i].file_id
@@ -522,5 +454,4 @@ async def update_stickers() -> None:
 
 if __name__ == "__main__":
     import asyncio
-
     asyncio.run(update_stickers())
