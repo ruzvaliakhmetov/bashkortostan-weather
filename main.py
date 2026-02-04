@@ -276,7 +276,7 @@ def _draw_details_block(draw: ImageDraw.ImageDraw, img: Image.Image, weather: We
     for line in lines:
         lb = draw.textbbox((0, 0), line, font=font)
         h = lb[3] - lb[1]
-        draw.text((x, y), line, font=font, fill=(220, 220, 220, 255))
+        draw.text((x, y), line, font=font, fill=(255, 255, 255, 255))
         y += h + DETAILS_LAYOUT.line_spacing
 
 
